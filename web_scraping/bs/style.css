@@ -1,0 +1,46 @@
+.header{
+	background: grey;
+	color: white;
+	font-size: 40px;
+	padding: 40px;
+}
+#menu{
+	display: inline-block;
+	color: white;
+	height: 50px;
+	width: auto;
+	background: black;
+	border-radius: 20px;
+	padding: 20px;
+}
+#main{
+	font-size: 30px;
+	padding-left: 40px;
+	padding-right: 40px;
+	}
+#buttons{
+	padding: 50px;
+}
+.butt{
+	width: 200px;
+	height: 50px;
+	font-size: 25px;
+	margin: 0 auto;
+	border: 1px solid black;
+	background: grey;
+	color: white;
+	border-radius: 20px;
+}
+.butt:hover{
+	box-shadow: inset 2px 2px 0 rgba(255, 255, 255, .4);
+	cursor: pointer;
+}
+
+@keyframes anim1{
+	0%{
+		transform: rotate(180deg);
+	}
+	100%{
+		transform: rotate(360deg);
+	}
+}
