@@ -56,8 +56,8 @@ class Person:
 		else:
 			print(self.name, 'is staying and he(she) is', self.age, 'years old')
 
-alis = Person('Alis', False, 99)
-mark = Person('Mark', True, 10)
+# alis = Person('Alis', False, 99)
+# mark = Person('Mark', True, 10)
 
 # alis.check()
 # mark.check()
@@ -67,5 +67,4 @@ mark = Person('Mark', True, 10)
 # alis.check()
 
 # print('Thats how mafia works')
-
-
+	
