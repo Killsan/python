@@ -4,7 +4,7 @@ import requests
 import sqlite3 as db
 from bs4 import BeautifulSoup as bs
 
-
+os.system('clear')
 #=================================SOCKET===================================
 
 
@@ -53,7 +53,7 @@ def tcp_server(IP = '127.0.0.1', PORT = 8080):
 			global client
 			client, addr = sock.accept()
 			identify(addr)
-			print('Connectid from', addr)
+			print('Connected from', addr)
 		except KeyboardInterrupt:
 			stop_server()
 			break
@@ -83,72 +83,152 @@ class Person:
 		self.surname = surname
 		self.job = job
 		self.salary = salary
-
-def create(name):
-	conn = db.connect(name + '.db')
+	
+def creating():
+	conn = db.connect('persons.db')
 	c = conn.cursor()
-
-	c.execute("""CREATE TABLE first(
+	c.execute("""CREATE TABLE person(
 			id integer PRIMARY KEY AUTOINCREMENT,
 			name text,
-			surname text
-		)""")
-
-	c.execute("""CREATE TABLE second(
-			id integer PRIMARY KEY AUTOINCREMENT,
 			surname text,
 			job text,
-			salary integer,
-			FOREIGN KEY(id) REFERENCES first(id),
-			FOREIGN KEY(surname) REFERENCES first(surname)
+			salary integer
 		)""")
 
-	conn.commit()
-	conn.close()	
+def get_info():
+	name = input("What is your name? ")
+	surname = input('What is your surname? ')
+	persons.append(surname)
+	while True:
+		conf = input("Have you got any job? ")
+		if 'y' in conf:
+			job = input('What kind of job do you have? ')
+			salary = input('How much they pay for you? ')
+			person = Person(name, surname, job, salary)
+			insert(person)
+			break
+		elif 'n' in conf:
+			print('Come back when you will get a job, bye')
+			break
+		else:
+			print('"yes" or "no"')
+			continue
 
-def database(s):
-	conn = db.connect(sqldb+'.db')
+def insert(p):
+	conn = db.connect('persons.db')
 	c = conn.cursor()
-	c.execute('INSERT INTO first(name, surname) VALUES(?, ?)', (s.name, s.surname))
-	c.execute('INSERT INTO second(surname, job, salary) VALUES(?, ?, ?)', (s.surname, s.job, s.salary))
+	c.execute("""INSERT INTO person(name, surname, job, salary)
+			values(?, ?, ?, ?)""", (p.name, p.surname, p.job, p.salary))
+
+
+#=====================================REGISTRATION===================================
+
+
+class User:
+	def __init__(self, nick, password):
+		self.nick = nick 
+		self.password = password
+
+def acc_db():
+	conn = db.connect('accounts.db')
+	c = conn.cursor()
+	c.execute("""CREATE TABLE users(
+			id integer PRIMARY KEY AUTOINCREMENT,
+			nick text,
+			password text
+		)""")
 	conn.commit()
 	conn.close()
 
-def insert():
-	name = input('Enter your name: ')
-	surname = input('Enter your surname: ')
-	confirm = input('Have you got a job? ')
-	if 'y' in confirm:
-		job = input('What kind of job you have? ')
-		salary = input('How much they pay for you? ')
-		surname = Person(name, surname, job, salary)
-		persons.append(surname)
-		database(surname)
+def new_acc(user):
+	conn = db.connect('accounts.db')
+	c = conn.cursor()
+	while True:
+		try:
+			c.execute("""INSERT INTO users(nick, password)
+				VALUES(?, ?)""", (user.nick, user.password))
+			conn.commit()
+			conn.close()
+			break
+		except db.OperationalError:
+			acc_db()
+
+
+def sing_up():
+	print('**CREATING NEW ACCOUNT**')
+	nick = input("Enter your nickname: ")
+	password = input('Create a new password: ')
+	conf = input("Repeat the password: ")
+	if password == conf:
+		user = User(nick, password)
+		new_acc(user)
+		clear()
+	sing_in()
+
+def sing_in():
+		nick = input('Enter your nick: ')
+		conn = db.connect('accounts.db')
+		c = conn.cursor()
+		c.execute('SELECT * FROM users')
+		res = c.fetchall()
+		x = 0
+		while x <= 5:
+			for i in res:
+				if i[1] == nick:
+					while True:
+						password = input('Password: ')
+						c.execute('SELECT * FROM users where nick = (?)', (nick,))
+						res = c.fetchall()
+						if res[0][2] == password:
+							print('Welcome')
+							break
+						else:
+							print('Wrong password')
+							continue
+				else:
+					print('No user found')
+					x += 1
+					continue			
+
+				
+
+while True:
+	acc = input('Do you have an account? ')
+	if 'n' in acc:
+		sing_up()
+		break
+	elif 'y' in acc:
+		sing_in()
+		break
 	else:
-		print('We need a humans with job, bye')
+		print('"yes" or "no"')
+		continue
 
 
-#=========================================================================
+#====================================================================================
 
-commands = ['insert', 'list', 'create database', 'run server']
+
+commands = ['insert', 'list', 'run server']
 while True:
 	command = input(">> ")
 	if command == 'insert':
-		insert()
+		direc = os.listdir()
+		if 'persons.db' not in direc:
+			creating()
+		else:
+			get_info()
 	elif command == 'list':
+		print('Persons you inserted today:')
 		for i in persons:
 			print(i.surname)
 		continue
-	elif command == 'create database':
-		sqldb = input('Enter the name of new database: ')
-		create(sqldb)
 	elif command == 'clear' or command == 'cls':
 		clear()
 	elif command == 'run server':
 		create()
 	elif command == 'help':
 		for i in commands:
-			pirnt(i)
+			print(i)
 	else:
 		print('No command found')
 		continue
