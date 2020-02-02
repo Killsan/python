@@ -1,0 +1,9 @@
+E0:69:95:17:34:9C
+sudo toriptables2.py -l -f 
+sudo apt clean
+sudo apt autoremove
+sudo /etc/init.d/bluetooth start
+sudo add-apt-repository ppa:webupd8team/java
+service postgresql start
+CE92F093AF227CEFB471F30E01293DEFDF20264407B2E6413BF9DE753DC2996D
+8583749
