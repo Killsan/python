@@ -1,0 +1,4 @@
+python3 manage.py runserver
+python3 manage.py migration
+python3 manage.py makemigrations <new app>
+python3 manage.py sqlmigrate <app> 0001
